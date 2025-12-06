@@ -78,83 +78,83 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-zinc-600 dark:text-zinc-400">Cargando...</div>
+      <div className="flex min-h-screen items-center justify-center bg-[#F2F2F7] dark:bg-black">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#007AFF] border-t-transparent"></div>
+          <div className="text-sm font-medium text-slate-500">Cargando...</div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <header className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold text-zinc-900 dark:text-zinc-100">
-            Gestor de Prompts para IA
-          </h1>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Administra y organiza tus prompts para agentes de inteligencia artificial
-          </p>
-        </header>
-
-        <div className="mb-6 flex flex-wrap gap-3">
+    <div className="min-h-screen bg-[#F2F2F7] text-slate-900 transition-colors duration-300 dark:bg-black dark:text-white">
+      <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+        <header className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
+              Prompts
+            </h1>
+            <p className="mt-2 text-lg text-slate-500 dark:text-slate-400">
+              Organiza tus ideas para IA
+            </p>
+          </div>
+          
           <button
             onClick={handleNewPrompt}
-            className="flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="group flex items-center justify-center gap-2 rounded-full bg-[#007AFF] px-6 py-3 text-[15px] font-semibold text-white shadow-lg shadow-blue-500/20 transition-all duration-200 active:scale-95 hover:bg-[#0062cc] hover:shadow-blue-500/30 dark:shadow-blue-900/20"
           >
             <svg
-              className="h-4 w-4"
+              className="h-5 w-5 transition-transform duration-200 group-hover:rotate-90"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              strokeWidth={2.5}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             Nuevo Prompt
           </button>
-          <button
-            onClick={handleExport}
-            disabled={prompts.length === 0}
-            className="flex items-center gap-2 rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        </header>
+
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-white/60 p-2 backdrop-blur-xl dark:bg-zinc-900/60">
+          <div className="px-4 text-sm font-medium text-slate-500 dark:text-slate-400">
+            {prompts.length} {prompts.length === 1 ? 'elemento' : 'elementos'}
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={handleExport}
+              disabled={prompts.length === 0}
+              className="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-[#007AFF] shadow-sm transition-all duration-200 active:scale-95 hover:bg-slate-50 disabled:opacity-50 dark:bg-zinc-800 dark:text-blue-400 dark:hover:bg-zinc-700"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
                 strokeWidth={2}
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-              />
-            </svg>
-            Exportar
-          </button>
-          <button
-            onClick={handleImportClick}
-            className="flex items-center gap-2 rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              Exportar
+            </button>
+            <button
+              onClick={handleImportClick}
+              className="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-medium text-[#007AFF] shadow-sm transition-all duration-200 active:scale-95 hover:bg-slate-50 dark:bg-zinc-800 dark:text-blue-400 dark:hover:bg-zinc-700"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
                 strokeWidth={2}
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-              />
-            </svg>
-            Importar
-          </button>
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Importar
+            </button>
+          </div>
           <input
             ref={fileInputRef}
             type="file"
@@ -163,12 +163,6 @@ export default function Home() {
             className="hidden"
           />
         </div>
-
-        {prompts.length > 0 && (
-          <div className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
-            {prompts.length} {prompts.length === 1 ? 'prompt guardado' : 'prompts guardados'}
-          </div>
-        )}
 
         <PromptList
           prompts={prompts}
@@ -188,11 +182,21 @@ export default function Home() {
         onSubmit={handleFormSubmit}
       />
 
-      {showCopyNotification && (
-        <div className="fixed bottom-4 right-4 rounded-md bg-zinc-900 px-4 py-2 text-sm text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900">
-          Prompt copiado al portapapeles
+      {/* Notificación estilo iOS Dynamic Island / Toast */}
+      <div 
+        className={`fixed left-1/2 top-6 z-50 -translate-x-1/2 transform transition-all duration-500 cubic-bezier(0.175, 0.885, 0.32, 1.275) ${
+          showCopyNotification 
+            ? 'translate-y-0 opacity-100 scale-100' 
+            : '-translate-y-8 opacity-0 scale-95 pointer-events-none'
+        }`}
+      >
+        <div className="flex items-center gap-3 rounded-full bg-black/80 px-6 py-3 text-white backdrop-blur-md shadow-2xl dark:bg-white/90 dark:text-black">
+          <svg className="h-5 w-5 text-green-400 dark:text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-[15px] font-medium">Copiado al portapapeles</span>
         </div>
-      )}
+      </div>
     </div>
   );
 }

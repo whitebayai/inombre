@@ -13,6 +13,7 @@ interface PromptFormProps {
 export default function PromptForm({ prompt, isOpen, onClose, onSubmit }: PromptFormProps) {
   const [name, setName] = useState('');
   const [content, setContent] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (prompt) {
@@ -35,74 +36,95 @@ export default function PromptForm({ prompt, isOpen, onClose, onSubmit }: Prompt
   };
 
   const handleClose = () => {
-    setName('');
-    setContent('');
-    onClose();
+    setIsClosing(true);
+    setTimeout(() => {
+      setName('');
+      setContent('');
+      setIsClosing(false);
+      onClose();
+    }, 200); // Wait for animation
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-2xl rounded-lg bg-white shadow-xl dark:bg-zinc-900">
-        <div className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
-          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
+    <div 
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}
+    >
+      {/* Backdrop con Blur */}
+      <div 
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" 
+        onClick={handleClose}
+      />
+
+      {/* Modal Content */}
+      <div 
+        className={`relative w-full max-w-lg overflow-hidden rounded-[2rem] bg-white shadow-2xl ring-1 ring-black/5 transition-all duration-300 dark:bg-[#1C1C1E] dark:ring-white/10 ${isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100 animate-in fade-in zoom-in-95 duration-300'}`}
+      >
+        <div className="px-8 pt-8 pb-6">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white text-center mb-1">
             {prompt ? 'Editar Prompt' : 'Nuevo Prompt'}
           </h2>
+          <p className="text-center text-slate-500 dark:text-zinc-400 text-sm mb-8">
+            {prompt ? 'Modifica los detalles de tu prompt' : 'Crea un nuevo prompt para tu colección'}
+          </p>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label
+                htmlFor="prompt-name"
+                className="ml-1 block text-sm font-semibold text-slate-900 dark:text-zinc-300"
+              >
+                Nombre
+              </label>
+              <input
+                id="prompt-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full rounded-2xl border-0 bg-slate-100 px-5 py-4 text-[17px] text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#007AFF] focus:bg-white transition-all dark:bg-[#2C2C2E] dark:text-white dark:placeholder-zinc-500 dark:focus:bg-[#3A3A3C]"
+                placeholder="Ej: Asistente de Código"
+                required
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label
+                htmlFor="prompt-content"
+                className="ml-1 block text-sm font-semibold text-slate-900 dark:text-zinc-300"
+              >
+                Contenido
+              </label>
+              <textarea
+                id="prompt-content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={6}
+                className="w-full resize-none rounded-2xl border-0 bg-slate-100 px-5 py-4 text-[17px] leading-relaxed text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#007AFF] focus:bg-white transition-all dark:bg-[#2C2C2E] dark:text-white dark:placeholder-zinc-500 dark:focus:bg-[#3A3A3C]"
+                placeholder="Escribe aquí las instrucciones del prompt..."
+                required
+              />
+            </div>
+
+            <div className="mt-8 grid grid-cols-2 gap-4 pt-4">
+              <button
+                type="button"
+                onClick={handleClose}
+                className="rounded-xl bg-slate-100 px-4 py-3.5 text-[17px] font-semibold text-slate-600 transition-colors hover:bg-slate-200 active:bg-slate-300 dark:bg-[#2C2C2E] dark:text-zinc-400 dark:hover:bg-[#3A3A3C]"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="rounded-xl bg-[#007AFF] px-4 py-3.5 text-[17px] font-semibold text-white shadow-lg shadow-blue-500/30 transition-all active:scale-95 hover:bg-[#0062cc]"
+              >
+                {prompt ? 'Guardar' : 'Crear'}
+              </button>
+            </div>
+          </form>
         </div>
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="mb-4">
-            <label
-              htmlFor="prompt-name"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Nombre
-            </label>
-            <input
-              id="prompt-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
-              placeholder="Ej: Generador de ideas"
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <label
-              htmlFor="prompt-content"
-              className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Contenido
-            </label>
-            <textarea
-              id="prompt-content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={8}
-              className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
-              placeholder="Escribe el contenido del prompt aquí..."
-              required
-            />
-          </div>
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-            >
-              {prompt ? 'Guardar Cambios' : 'Crear Prompt'}
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   );
 }
-
